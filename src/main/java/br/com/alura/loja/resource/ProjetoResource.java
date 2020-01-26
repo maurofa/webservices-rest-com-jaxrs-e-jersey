@@ -12,10 +12,18 @@ import br.com.alura.loja.dao.ProjetoDAO;
 @Path("projetos")
 public class ProjetoResource {
 
+	ProjetoDAO projetoDAO = new ProjetoDAO();
+
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	public String busca() {
-		ProjetoDAO projetoDAO = new ProjetoDAO();
 		return new XStream().toXML(projetoDAO.trazTodos());
+	}
+	
+	@GET
+	@Path("1")
+	@Produces(MediaType.APPLICATION_XML)
+	public String busca1() {
+		return new XStream().toXML(projetoDAO.busca(1l));
 	}
 }
