@@ -10,6 +10,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.junit.After;
@@ -52,7 +53,7 @@ public class CarrinhoResourceTest {
 		
 		Entity<String> entity = Entity.entity(xml, MediaType.APPLICATION_XML);
 		Response resposta = pegaOTarget().path("/carrinhos").request().post(entity);
-		assertEquals("<status>sucesso</status>", resposta.readEntity(String.class));
+		assertEquals(Status.CREATED.getStatusCode(), resposta.getStatus());
 	}
 
 	private String extraiConteudo(String complemento) {
