@@ -13,6 +13,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.filter.LoggingFilter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,10 +28,14 @@ import br.com.alura.loja.modelo.Produto;
 public class CarrinhoResourceTest {
 
 	private HttpServer server;
+	private Client client;
 
 	@Before
 	public void iniciaServidor() throws IOException {
 		server = Servidor.inicializaServidor();
+		ClientConfig config = new ClientConfig();
+		config.register(new LoggingFilter());
+		client = ClientBuilder.newClient(config);
 	}
 	
 	@After
@@ -62,7 +68,6 @@ public class CarrinhoResourceTest {
 	}
 
 	private WebTarget pegaOTarget() {
-		Client client = ClientBuilder.newClient();
 		return client.target("http://localhost:8080");
 	}
 }
