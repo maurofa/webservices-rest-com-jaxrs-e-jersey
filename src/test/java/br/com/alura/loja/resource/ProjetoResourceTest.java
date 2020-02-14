@@ -1,9 +1,9 @@
 package br.com.alura.loja.resource;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -13,8 +13,6 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.thoughtworks.xstream.XStream;
 
 import br.com.alura.loja.Servidor;
 import br.com.alura.loja.modelo.Projeto;
@@ -35,22 +33,21 @@ public class ProjetoResourceTest {
 
 	@Test
 	public void testTrazProjetos() {
-		String conteudo = extraiConteudo("/projetos");
-		assertTrue(conteudo.contains("<nome>Minha loja"));
-		assertTrue(conteudo.contains("<nome>Alura"));
+		List<Projeto> projetos = extraiTarget("/projetos").request().get(List.class);
+
+		assertEquals(projetos.get(0).getNome(), "Minha loja");
+		assertEquals(projetos.get(1).getNome(), "Alura");
 	}
 
-	private String extraiConteudo(String complemento) {
+	private WebTarget extraiTarget(String complemento) {
 		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target("http://localhost:8080");
-		String conteudo = target.path(complemento).request().get(String.class);
-		return conteudo;
+		WebTarget target = client.target(Servidor.URL_PATH);
+		return target.path(complemento);
 	}
 	
 	@Test
 	public void testTrazProjeto1() {
-		String conteudo = extraiConteudo("/projetos/1");
-		Projeto projeto = (Projeto) new XStream().fromXML(conteudo);
+		Projeto projeto = extraiTarget("/projetos/1").request().get(Projeto.class);
 		assertEquals("Minha loja", projeto.getNome());
 	}
 }

@@ -19,8 +19,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.thoughtworks.xstream.XStream;
-
 import br.com.alura.loja.Servidor;
 import br.com.alura.loja.modelo.Carrinho;
 import br.com.alura.loja.modelo.Produto;
@@ -45,7 +43,7 @@ public class CarrinhoResourceTest {
 	
 	@Test
 	public void testaQueBuscarUmCarrinhoTrazOCarrinhoEsperado() {
-        Carrinho carrinho = (Carrinho) new XStream().fromXML(extraiConteudo("/carrinhos/1"));
+		Carrinho carrinho = pegaOTarget("/carrinhos/1").request().get(Carrinho.class);
 		assertEquals("Rua Vergueiro 3185, 8 andar", carrinho.getRua());
 	}
 	
@@ -55,19 +53,13 @@ public class CarrinhoResourceTest {
 		carrinho.adiciona(new Produto(314l, "Tablet", 999, 1));
 		carrinho.setRua("Rua Vergueiro");
 		carrinho.setCidade("São Paulo");
-		String xml = carrinho.toXml();
 		
-		Entity<String> entity = Entity.entity(xml, MediaType.APPLICATION_XML);
-		Response resposta = pegaOTarget().path("/carrinhos").request().post(entity);
+		Entity<Carrinho> entity = Entity.entity(carrinho, MediaType.APPLICATION_XML);
+		Response resposta = pegaOTarget("/carrinhos").request().post(entity);
 		assertEquals(Status.CREATED.getStatusCode(), resposta.getStatus());
 	}
 
-	private String extraiConteudo(String complemento) {
-		String conteudo = pegaOTarget().path(complemento).request().get(String.class);
-		return conteudo;
-	}
-
-	private WebTarget pegaOTarget() {
-		return client.target("http://localhost:8080");
+	private WebTarget pegaOTarget(String complemento) {
+		return client.target(Servidor.URL_PATH).path(complemento);
 	}
 }

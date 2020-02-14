@@ -33,6 +33,7 @@ public class ProjetoDAO {
 	}
 	
 	public List<Projeto> trazTodos() {
-		return new ArrayList<>(banco.values());
+		ArrayList<Projeto> projetos = new ArrayList<>(banco.values());
+		return projetos;
 	}
 }
